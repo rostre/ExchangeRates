@@ -23,9 +23,9 @@ const val STATE_FROM_AMOUNT = "amount"
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: MainRepository,
-    private val dispatchers: DispatcherProvider,
-    val savedStateHandle : SavedStateHandle
+        private val repository: MainRepository,
+        private val dispatchers: DispatcherProvider,
+        private val savedStateHandle : SavedStateHandle
 ) : ViewModel() {
 
     sealed class CurrencyEvent {
@@ -35,6 +35,21 @@ class MainViewModel @Inject constructor(
         object Empty : CurrencyEvent()
     }
 
+    init {
+        savedStateHandle.get<String>(STATE_FROM_CURRENCY_CODE)?.let { from ->
+            setSelectedFromCurrency(currencies.first {
+                it.code == from
+            })
+        }
+        savedStateHandle.get<String>(STATE_TO_CURRENCY_CODE)?.let { to ->
+            setSelectedToCurrency(currencies.first {
+                it.code == to
+            })
+        }
+        savedStateHandle.get<String>(STATE_FROM_AMOUNT)?.let { amount ->
+            updateAmount(amount)
+        }
+    }
 
     private val _currencyFrom = MutableStateFlow(
             Event(
@@ -52,9 +67,8 @@ class MainViewModel @Inject constructor(
     private val _conversion = MutableStateFlow<CurrencyEvent>(CurrencyEvent.Empty)
     val conversion : StateFlow<CurrencyEvent> = _conversion
 
-    fun convert(amount : String?){
-
-        val fromAmount = amount?.toFloatOrNull()
+    fun convert(){
+        val fromAmount = amount.value.peekContent().toFloatOrNull()
         if (fromAmount == null) {
             _conversion.value = CurrencyEvent.Failure("0")
             return
@@ -85,23 +99,24 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun switchCurrencies(amount: String?){
+    fun switchCurrencies(){
         val tempCurrency = currencyFrom.value.peekContent()
         _currencyFrom.value = Event(currencyTo.value.peekContent())
         _currencyTo.value = Event(tempCurrency)
 
-        convert(amount)
+        convert()
         //convert(amount.value.peekContent())
     }
 
     fun setSelectedFromCurrency(currency: Currency){
         _currencyFrom.value = Event(currency)
-
+        savedStateHandle.set(STATE_FROM_CURRENCY_CODE, currency.code)
         //convert()
     }
 
     fun setSelectedToCurrency(currency: Currency) {
         _currencyTo.value = Event(currency)
+        savedStateHandle.set(STATE_TO_CURRENCY_CODE, currency.code)
 
         //convert()
     }
@@ -115,6 +130,12 @@ class MainViewModel @Inject constructor(
             }
         }
         return filteredList
+    }
+
+    fun updateAmount(amount: String) {
+        _amount.value = Event(amount)
+        savedStateHandle.set(STATE_FROM_AMOUNT, amount)
+        convert()
     }
 
 }

@@ -34,11 +34,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         _binding = FragmentHomeBinding.bind(view)
 
         binding.etFromAmount.doOnTextChanged { text, _, _, _ ->
-            viewModel.convert(text.toString())
+            viewModel.updateAmount(text.toString())
+            //viewModel.convert(text.toString())
         }
 
         binding.btnConvert.setOnClickListener {
-            viewModel.switchCurrencies(binding.etFromAmount.text.toString())
+            viewModel.switchCurrencies()
         }
 
         binding.fromCurrency.ivNavigate.setOnClickListener {
