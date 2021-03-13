@@ -1,57 +1,83 @@
 package ro.twodoors.exchangerates.main
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import ro.twodoors.exchangerates.data.model.Rates
+import ro.twodoors.exchangerates.R
+import ro.twodoors.exchangerates.data.model.Currency
 import ro.twodoors.exchangerates.util.DispatcherProvider
+import ro.twodoors.exchangerates.util.Event
+import ro.twodoors.exchangerates.util.Helper.currencies
+import ro.twodoors.exchangerates.util.Helper.getRateForCurrency
 import ro.twodoors.exchangerates.util.Resource
 import javax.inject.Inject
 import kotlin.math.round
 
+const val STATE_FROM_CURRENCY_CODE = "currency_from"
+const val STATE_TO_CURRENCY_CODE = "currency_to"
+const val STATE_FROM_AMOUNT = "amount"
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: MainRepository,
-    private val dispatchers: DispatcherProvider
+    private val dispatchers: DispatcherProvider,
+    val savedStateHandle : SavedStateHandle
 ) : ViewModel() {
 
     sealed class CurrencyEvent {
-        class Success(val resultText: String): CurrencyEvent()
+        class Success(val resultText: String, val date : String, val rate : String): CurrencyEvent()
         class Failure(val errorText: String): CurrencyEvent()
         object Loading : CurrencyEvent()
         object Empty : CurrencyEvent()
     }
 
+
+    private val _currencyFrom = MutableStateFlow(
+            Event(
+                    Currency("EUR", "Euro", "€", R.drawable.ic_eur)))
+    val currencyFrom : StateFlow<Event<Currency>> = _currencyFrom
+
+    private val _currencyTo = MutableStateFlow(
+            Event(
+                    Currency("USD", "United States Dollar", "$", R.drawable.ic_usd)))
+    val currencyTo : StateFlow<Event<Currency>> = _currencyTo
+
+    private val _amount = MutableStateFlow(Event("1"))
+    val amount: StateFlow<Event<String>> = _amount
+
     private val _conversion = MutableStateFlow<CurrencyEvent>(CurrencyEvent.Empty)
     val conversion : StateFlow<CurrencyEvent> = _conversion
 
-    fun convert(
-        amount : String,
-        fromCurrency : String,
-        toCurrency : String
-    ){
-        val fromAmount = amount.toFloatOrNull()
+    fun convert(amount : String?){
+
+        val fromAmount = amount?.toFloatOrNull()
         if (fromAmount == null) {
-            _conversion.value = CurrencyEvent.Failure("Not a valid amount")
+            _conversion.value = CurrencyEvent.Failure("0")
             return
         }
 
         viewModelScope.launch (dispatchers.io){
             _conversion.value = CurrencyEvent.Loading
-            when(val ratesResponse = repository.getRates(fromCurrency)) {
+
+            when(val ratesResponse = repository.getRates(currencyFrom.value.peekContent().code)) {
                 is Resource.Error -> _conversion.value = CurrencyEvent.Failure(ratesResponse.message!!)
                 is Resource.Success -> {
                     val rates = ratesResponse.data!!.rates
-                    val rate = getRateForCurrency(toCurrency, rates)
+                    val date = ratesResponse.data.date
+                    val rate = getRateForCurrency(currencyTo.value.peekContent().code, rates)
                     if(rate == null) {
                         _conversion.value = CurrencyEvent.Failure("Unexpected error")
                     } else {
                         val convertedCurrency = round(fromAmount * rate * 100) / 100
                         _conversion.value = CurrencyEvent.Success(
-                            "$fromAmount $fromCurrency = $convertedCurrency $toCurrency"
+                            //"$fromAmount ${currencyFrom.value.peekContent().code} = $convertedCurrency ${currencyTo.value.peekContent().code}",
+                                "$convertedCurrency",
+                                date = date,
+                                rate = "1 ${currencyFrom.value.peekContent().code} = $rate ${currencyTo.value.peekContent().code}"
                         )
                     }
                 }
@@ -59,39 +85,36 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getRateForCurrency(currency: String, rates: Rates) = when (currency) {
-        "CAD" -> rates.cAD
-        "HKD" -> rates.hKD
-        "ISK" -> rates.iSK
-        "EUR" -> rates.eUR
-        "PHP" -> rates.pHP
-        "DKK" -> rates.dKK
-        "HUF" -> rates.hUF
-        "CZK" -> rates.cZK
-        "AUD" -> rates.aUD
-        "RON" -> rates.rON
-        "SEK" -> rates.sEK
-        "IDR" -> rates.iDR
-        "INR" -> rates.iNR
-        "BRL" -> rates.bRL
-        "RUB" -> rates.rUB
-        "HRK" -> rates.hRK
-        "JPY" -> rates.jPY
-        "THB" -> rates.tHB
-        "CHF" -> rates.cHF
-        "SGD" -> rates.sGD
-        "PLN" -> rates.pLN
-        "BGN" -> rates.bGN
-        "CNY" -> rates.cNY
-        "NOK" -> rates.nOK
-        "NZD" -> rates.nZD
-        "ZAR" -> rates.zAR
-        "USD" -> rates.uSD
-        "MXN" -> rates.mXN
-        "ILS" -> rates.iLS
-        "GBP" -> rates.gBP
-        "KRW" -> rates.kRW
-        "MYR" -> rates.mYR
-        else -> null
+    fun switchCurrencies(amount: String?){
+        val tempCurrency = currencyFrom.value.peekContent()
+        _currencyFrom.value = Event(currencyTo.value.peekContent())
+        _currencyTo.value = Event(tempCurrency)
+
+        convert(amount)
+        //convert(amount.value.peekContent())
     }
+
+    fun setSelectedFromCurrency(currency: Currency){
+        _currencyFrom.value = Event(currency)
+
+        //convert()
+    }
+
+    fun setSelectedToCurrency(currency: Currency) {
+        _currencyTo.value = Event(currency)
+
+        //convert()
+    }
+
+    fun filter(query : String) : MutableList<Currency>{
+        val filteredList = mutableListOf<Currency>()
+        for (currency in currencies){
+            if (currency.code.toLowerCase().contains(query.toLowerCase()) ||
+                    currency.description.toLowerCase().contains(query.toLowerCase())){
+                filteredList.add(currency)
+            }
+        }
+        return filteredList
+    }
+
 }

@@ -1,6 +1,6 @@
 package ro.twodoors.exchangerates.main
 
-import ro.twodoors.exchangerates.data.ExchangeRatesApi
+import ro.twodoors.exchangerates.data.model.ExchangeRatesApi
 import ro.twodoors.exchangerates.data.model.ApiResponse
 import ro.twodoors.exchangerates.util.Resource
 import java.lang.Exception

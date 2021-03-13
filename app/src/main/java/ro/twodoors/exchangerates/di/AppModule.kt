@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ro.twodoors.exchangerates.data.ExchangeRatesApi
+import ro.twodoors.exchangerates.data.model.ExchangeRatesApi
 import ro.twodoors.exchangerates.main.MainRepository
 import ro.twodoors.exchangerates.main.MainRepositoryImpl
 import ro.twodoors.exchangerates.util.DispatcherProvider

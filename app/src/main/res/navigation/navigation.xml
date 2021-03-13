@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="ro.twodoors.exchangerates.main.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_selectCurrencyFragment"
+            app:destination="@id/selectCurrencyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/selectCurrencyFragment"
+        android:name="ro.twodoors.exchangerates.main.SelectCurrencyFragment"
+        android:label="fragment_select_currency"
+        tools:layout="@layout/fragment_select_currency" >
+        <argument
+            android:name="source"
+            app:argType="string" />
+    </fragment>
+</navigation>
