@@ -8,9 +8,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ro.twodoors.exchangerates.data.model.ExchangeRatesApi
-import ro.twodoors.exchangerates.main.MainRepository
-import ro.twodoors.exchangerates.main.MainRepositoryImpl
+import ro.twodoors.exchangerates.data.api.ExchangeRatesApi
+import ro.twodoors.exchangerates.data.repository.Repository
+import ro.twodoors.exchangerates.data.repository.RepositoryImpl
 import ro.twodoors.exchangerates.util.DispatcherProvider
 
 private const val BASE_URL = "https://api.exchangeratesapi.io/"
@@ -27,7 +27,7 @@ object AppModule {
         .create(ExchangeRatesApi::class.java)
 
     @Provides
-    fun provideRepository(api : ExchangeRatesApi) : MainRepository = MainRepositoryImpl(api)
+    fun provideRepository(api : ExchangeRatesApi) : Repository = RepositoryImpl(api)
 
     @Provides
     fun provideDispatchers() : DispatcherProvider = object : DispatcherProvider{

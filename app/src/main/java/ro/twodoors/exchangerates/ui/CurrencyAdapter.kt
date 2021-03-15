@@ -1,17 +1,13 @@
-package ro.twodoors.exchangerates.main
+package ro.twodoors.exchangerates.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import ro.twodoors.exchangerates.data.model.Currency
 import ro.twodoors.exchangerates.databinding.CurrencyListItemBinding
-import ro.twodoors.exchangerates.util.Helper.currencies
 
 class CurrencyAdapter(var currencies : MutableList<Currency>,
-        val adapterOnClick : (View, Currency) -> Unit
+                      private val adapterOnClick : (Currency) -> Unit
 ): RecyclerView.Adapter<CurrencyViewHolder>() {
 
 

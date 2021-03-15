@@ -1,4 +1,4 @@
-package ro.twodoors.exchangerates.main
+package ro.twodoors.exchangerates.ui
 
 import android.os.Bundle
 import android.view.View
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import ro.twodoors.exchangerates.R
 import ro.twodoors.exchangerates.data.model.Currency
-import ro.twodoors.exchangerates.databinding.FragmentHomeBinding
 import ro.twodoors.exchangerates.databinding.FragmentSelectCurrencyBinding
 import ro.twodoors.exchangerates.util.Helper.SOURCE_FROM
 import ro.twodoors.exchangerates.util.Helper.SOURCE_TO
@@ -22,22 +21,22 @@ class SelectCurrencyFragment : Fragment(R.layout.fragment_select_currency) {
 
     private var _binding: FragmentSelectCurrencyBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: MainViewModel by activityViewModels()
+    private val viewModel: SharedViewModel by activityViewModels()
     private val args : SelectCurrencyFragmentArgs by navArgs()
-    private val onCLick : (View, Currency) -> Unit = {view, currency -> adapterOnClick(view, currency) }
+    private val onCLick : (Currency) -> Unit = {currency -> adapterOnClick(currency) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentSelectCurrencyBinding.bind(view)
-        val currencyAdapter = CurrencyAdapter(currencies, onCLick)
-        binding.rvCurrencies.adapter = currencyAdapter
-        binding.rvCurrencies.setHasFixedSize(true)
-
         setToolbarTitle()
 
-        val decoration = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
-        binding.rvCurrencies.addItemDecoration(decoration)
+        val currencyAdapter = CurrencyAdapter(currencies, onCLick)
+        binding.rvCurrencies.apply {
+            adapter = currencyAdapter
+            setHasFixedSize(true)
+            addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+        }
 
         binding.searchCurrency.doOnTextChanged { text, _, _, _ ->
             val query = text.toString().toLowerCase()
@@ -45,6 +44,9 @@ class SelectCurrencyFragment : Fragment(R.layout.fragment_select_currency) {
             currencyAdapter.filter(filteredList)
         }
 
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     private fun setToolbarTitle() {
@@ -63,12 +65,13 @@ class SelectCurrencyFragment : Fragment(R.layout.fragment_select_currency) {
         }
     }
 
-
-    private fun adapterOnClick(view: View, currency : Currency) {
-        if (args.source == SOURCE_FROM)
+    private fun adapterOnClick(currency : Currency) {
+        if (args.source == SOURCE_FROM){
             viewModel.setSelectedFromCurrency(currency)
-        if (args.source == SOURCE_TO)
+        }
+        if (args.source == SOURCE_TO){
             viewModel.setSelectedToCurrency(currency)
+        }
         findNavController().navigateUp()
     }
 

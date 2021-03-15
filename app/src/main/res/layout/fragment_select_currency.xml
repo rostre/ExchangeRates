@@ -5,16 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".main.SelectCurrencyFragment">
+    tools:context=".ui.SelectCurrencyFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Select currency"/>
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextAppearance="@style/ToolbarTextApperance"
+        style="@style/ToolbarStyle"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_layout"
@@ -37,7 +40,7 @@
             android:imeOptions="actionSearch"
             android:inputType="textCapSentences"
             android:selectAllOnFocus="true"
-            android:hint="Currency"/>
+            android:hint="@string/currency"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView

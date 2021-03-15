@@ -1,14 +1,15 @@
-package ro.twodoors.exchangerates.main
+package ro.twodoors.exchangerates.data.repository
 
-import ro.twodoors.exchangerates.data.model.ExchangeRatesApi
+import ro.twodoors.exchangerates.data.api.ExchangeRatesApi
 import ro.twodoors.exchangerates.data.model.ApiResponse
+import ro.twodoors.exchangerates.data.repository.Repository
 import ro.twodoors.exchangerates.util.Resource
 import java.lang.Exception
 import javax.inject.Inject
 
-class MainRepositoryImpl @Inject constructor(
+class RepositoryImpl @Inject constructor(
     private val api: ExchangeRatesApi
-) : MainRepository {
+) : Repository {
 
     override suspend fun getRates(base: String): Resource<ApiResponse> {
         return try {

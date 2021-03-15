@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingHorizontal="@dimen/general_margin_16dp"
-    tools:context=".main.HomeFragment">
+    tools:context=".ui.HomeFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,16 +14,25 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/app_name"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/currency_converter"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/contentFrom"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/general_margin_16dp"
         android:background="@drawable/outline"
-        android:elevation="8dp"
+        android:elevation="@dimen/margin_8dp"
         android:padding="@dimen/general_margin_16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,13 +48,13 @@
         <EditText
             android:id="@+id/etFromAmount"
             android:layout_width="wrap_content"
-            android:maxWidth="200dp"
+            android:maxWidth="250dp"
             android:layout_height="match_parent"
             android:backgroundTint="@android:color/transparent"
             android:gravity="end"
             android:hint="0"
             android:inputType="numberDecimal"
-            android:textSize="24sp"
+            android:textSize="@dimen/amount_text_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fromCurrency" />
 
@@ -53,13 +62,12 @@
             android:id="@+id/tvCurrencySymbol"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="@dimen/margin_4dp"
             android:gravity="center"
-            android:textSize="20sp"
+            android:textSize="@dimen/symbol_text_size"
             app:layout_constraintBottom_toBottomOf="@+id/etFromAmount"
             app:layout_constraintEnd_toStartOf="@+id/etFromAmount"
             app:layout_constraintTop_toTopOf="@+id/etFromAmount"
-            app:layout_constraintVertical_bias="0.0"
             tools:text="$" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -68,9 +76,9 @@
         android:id="@+id/contentTo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/margin_8dp"
         android:background="@drawable/outline"
-        android:elevation="8dp"
+        android:elevation="@dimen/margin_8dp"
         android:padding="@dimen/general_margin_16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,53 +91,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <ImageView-->
-<!--            android:id="@+id/ivToFlagIcon"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="36dp"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            tools:src="@drawable/ic_usd" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tvToCurrencyCode"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="16dp"-->
-<!--            android:includeFontPadding="false"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="20sp"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/ivToFlagIcon"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/ivToFlagIcon"-->
-<!--            tools:text="USD" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tvToCurrencyName"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:includeFontPadding="false"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/ivToFlagIcon"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/tvToCurrencyCode"-->
-<!--            tools:text="United States dollar" />-->
-
-<!--        <ImageView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:src="@drawable/ic_arrow_right_24"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/ivToFlagIcon"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/ivToFlagIcon" />-->
-
         <TextView
             android:id="@+id/tvResult"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="end"
             android:hint="0"
-            android:padding="8dp"
-            android:textSize="24sp"
+            android:padding="@dimen/margin_8dp"
+            android:textSize="@dimen/amount_text_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toCurrency" />
 
@@ -137,13 +106,12 @@
             android:id="@+id/tvToCurrencySymbol"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="@dimen/margin_4dp"
             android:gravity="center"
-            android:textSize="20sp"
+            android:textSize="@dimen/symbol_text_size"
             app:layout_constraintBottom_toBottomOf="@+id/tvResult"
             app:layout_constraintEnd_toStartOf="@+id/tvResult"
             app:layout_constraintTop_toTopOf="@+id/tvResult"
-            app:layout_constraintVertical_bias="0.0"
             tools:text="$" />
 
         <ProgressBar
@@ -163,27 +131,28 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:drawableLeft="@drawable/ic_switch"
-        android:text="Switch currencies"
+        android:text="@string/switch_currencies"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contentFrom" />
 
-
     <TextView
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:textColor="@color/purple_500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRate"
-        tools:text="2021-03-02" />
+        tools:text="Exchange rates provided by the European Central Bank on 2021-03-02" />
 
     <TextView
         android:id="@+id/tvRate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/general_margin_16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contentTo"
