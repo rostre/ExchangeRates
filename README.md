@@ -2,7 +2,7 @@
 
 ## ExchangeRates
 
-Currency exchange app using the [Exchange rates API](https://exchangeratesapi.io/)
+Currency exchange app using the [Exchange rates API](https://api.ratesapi.io/api/)
 
 * MVVM architecture
 * Navigation - single activity approach and fragments for destinations, safeargs for passing parameters
