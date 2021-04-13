@@ -55,7 +55,7 @@ class SharedViewModel @Inject constructor(
                 is Resource.Success -> {
                     val rates = ratesResponse.data!!.rates
                     val date = ratesResponse.data.date
-                    val rate = getRateForCurrency(currencyTo.value.peekContent().code, rates)
+                    val rate =  getRateForCurrency(currencyTo.value.peekContent().code, rates)
                     if(rate == null) {
                         _conversion.value = CurrencyEvent.Failure("Unexpected error")
                     } else {
