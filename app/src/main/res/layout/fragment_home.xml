@@ -26,104 +26,24 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
         android:id="@+id/contentFrom"
+        layout="@layout/layout_content_from"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/general_margin_16dp"
-        android:background="@drawable/outline"
-        android:elevation="@dimen/margin_8dp"
-        android:padding="@dimen/general_margin_16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-        <include
-            android:id="@+id/fromCurrency"
-            layout="@layout/currency_list_item"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/etFromAmount"
-            android:layout_width="wrap_content"
-            android:maxWidth="250dp"
-            android:layout_height="match_parent"
-            android:backgroundTint="@android:color/transparent"
-            android:gravity="end"
-            android:hint="0"
-            android:inputType="numberDecimal"
-            android:textSize="@dimen/amount_text_size"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fromCurrency" />
-
-        <TextView
-            android:id="@+id/tvCurrencySymbol"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/margin_4dp"
-            android:gravity="center"
-            android:textSize="@dimen/symbol_text_size"
-            app:layout_constraintBottom_toBottomOf="@+id/etFromAmount"
-            app:layout_constraintEnd_toStartOf="@+id/etFromAmount"
-            app:layout_constraintTop_toTopOf="@+id/etFromAmount"
-            tools:text="$" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
         android:id="@+id/contentTo"
+        layout="@layout/layout_content_to"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_8dp"
-        android:background="@drawable/outline"
-        android:elevation="@dimen/margin_8dp"
-        android:padding="@dimen/general_margin_16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnConvert">
-
-        <include
-            android:id="@+id/toCurrency"
-            layout="@layout/currency_list_item"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvResult"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="end"
-            android:hint="0"
-            android:padding="@dimen/margin_8dp"
-            android:textSize="@dimen/amount_text_size"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toCurrency" />
-
-        <TextView
-            android:id="@+id/tvToCurrencySymbol"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/margin_4dp"
-            android:gravity="center"
-            android:textSize="@dimen/symbol_text_size"
-            app:layout_constraintBottom_toBottomOf="@+id/tvResult"
-            app:layout_constraintEnd_toStartOf="@+id/tvResult"
-            app:layout_constraintTop_toTopOf="@+id/tvResult"
-            tools:text="$" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/tvResult"
-            app:layout_constraintEnd_toEndOf="@+id/tvResult"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/btnConvert"/>
 
     <Button
         android:id="@+id/btnConvert"

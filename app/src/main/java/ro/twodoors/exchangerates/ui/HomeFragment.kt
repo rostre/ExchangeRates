@@ -29,7 +29,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         _binding = FragmentHomeBinding.bind(view)
 
-        binding.etFromAmount.doOnTextChanged { text, _, _, _ ->
+        binding.contentFrom.etFromAmount.doOnTextChanged { text, _, _, _ ->
             viewModel.updateAmount(text.toString())
         }
 
@@ -37,62 +37,36 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             viewModel.switchCurrencies()
         }
 
-        binding.fromCurrency.ivNavigate.setOnClickListener {
+        binding.contentFrom.fromCurrency.ivNavigate.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSelectCurrencyFragment(SOURCE_FROM))
         }
 
-        binding.toCurrency.ivNavigate.setOnClickListener {
+        binding.contentTo.toCurrency.ivNavigate.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSelectCurrencyFragment(SOURCE_TO))
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.currencyFrom.collect { event ->
-                event.getContentIfNotHandled().let { currency ->
-                    if (currency != null){
-                        binding.apply {
-                            fromCurrency.apply {
-                                tvCurrencyCode.text = currency.code
-                                tvCurrencyName.text = currency.description
-                                ivFlagIcon.setImageResource(currency.icon)
-                            }
-                            tvCurrencySymbol.text = currency.symbol
-                        }
-                    } else {
-                        binding.apply {
-                            fromCurrency.apply {
-                                tvCurrencyCode.text = event.peekContent().code
-                                tvCurrencyName.text = event.peekContent().description
-                                ivFlagIcon.setImageResource(event.peekContent().icon)
-                            }
-                            tvCurrencySymbol.text = event.peekContent().symbol
-                        }
+            viewModel.currencyFrom.collect { currency ->
+                binding.apply {
+                    contentFrom.fromCurrency.apply {
+                        tvCurrencyCode.text = currency.code
+                        tvCurrencyName.text = currency.description
+                        ivFlagIcon.setImageResource(currency.icon)
                     }
+                    contentFrom.tvCurrencySymbol.text = currency.symbol
                 }
             }
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.currencyTo.collect { event ->
-                event.getContentIfNotHandled().let { currency ->
-                    if (currency != null){
-                        binding.apply {
-                            toCurrency.apply {
-                                tvCurrencyCode.text = currency.code
-                                tvCurrencyName.text = currency.description
-                                ivFlagIcon.setImageResource(currency.icon)
-                            }
-                            tvToCurrencySymbol.text = currency.symbol
-                        }
-                    } else {
-                        binding.apply {
-                            toCurrency.apply {
-                                tvCurrencyCode.text = event.peekContent().code
-                                tvCurrencyName.text = event.peekContent().description
-                                ivFlagIcon.setImageResource(event.peekContent().icon)
-                            }
-                            tvToCurrencySymbol.text = event.peekContent().symbol
-                        }
+            viewModel.currencyTo.collect { currency ->
+                binding.apply {
+                    contentTo.toCurrency.apply {
+                        tvCurrencyCode.text = currency.code
+                        tvCurrencyName.text = currency.description
+                        ivFlagIcon.setImageResource(currency.icon)
                     }
+                    contentTo.tvToCurrencySymbol.text = currency.symbol
                 }
             }
         }
@@ -103,23 +77,23 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                     is CurrencyEvent.Success -> {
                         binding.apply {
-                            progressBar.isVisible = false
-                            tvResult.text = event.resultText
-                            tvResult.setTextColor(Color.BLACK)
+                            contentTo.progressBar.isVisible = false
+                            contentTo.tvResult.text = event.resultText
+                            contentTo.tvResult.setTextColor(Color.BLACK)
                             tvDate.text = event.date
                             tvRate.text = event.rate
                         }
                     }
                     is CurrencyEvent.Failure -> {
                         binding.apply {
-                            progressBar.isVisible = false
-                            tvResult.text = event.errorText
+                            contentTo.progressBar.isVisible = false
+                            contentTo.tvResult.text = event.errorText
                             tvDate.text = ""
                             tvRate.text = ""
                         }
                     }
                     is CurrencyEvent.Loading -> {
-                        binding.progressBar.isVisible = true
+                        binding.contentTo.progressBar.isVisible = true
                     }
                     else -> Unit
                 }

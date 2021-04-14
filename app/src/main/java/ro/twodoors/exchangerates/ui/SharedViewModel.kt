@@ -11,7 +11,6 @@ import ro.twodoors.exchangerates.data.model.Currency
 import ro.twodoors.exchangerates.data.repository.Repository
 import ro.twodoors.exchangerates.util.CurrencyEvent
 import ro.twodoors.exchangerates.util.DispatcherProvider
-import ro.twodoors.exchangerates.util.Event
 import ro.twodoors.exchangerates.util.Helper.currencies
 import ro.twodoors.exchangerates.util.Helper.getRateForCurrency
 import ro.twodoors.exchangerates.util.Resource
@@ -25,23 +24,21 @@ class SharedViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _currencyFrom = MutableStateFlow(
-            Event(
-                    Currency("EUR", "Euro", "€", R.drawable.ic_eur)))
-    val currencyFrom : StateFlow<Event<Currency>> = _currencyFrom
+                    Currency("EUR", "Euro", "€", R.drawable.ic_eur))
+    val currencyFrom : StateFlow<Currency> = _currencyFrom
 
     private val _currencyTo = MutableStateFlow(
-            Event(
-                    Currency("USD", "United States Dollar", "$", R.drawable.ic_usd)))
-    val currencyTo : StateFlow<Event<Currency>> = _currencyTo
+                    Currency("USD", "United States Dollar", "$", R.drawable.ic_usd))
+    val currencyTo : StateFlow<Currency> = _currencyTo
 
-    private val _amount = MutableStateFlow(Event("0"))
-    val amount: StateFlow<Event<String>> = _amount
+    private val _amount = MutableStateFlow("0")
+    val amount: StateFlow<String> = _amount
 
     private val _conversion = MutableStateFlow<CurrencyEvent>(CurrencyEvent.Empty)
     val conversion : StateFlow<CurrencyEvent> = _conversion
 
     private fun convert(){
-        val fromAmount = amount.value.peekContent().toFloatOrNull()
+        val fromAmount = amount.value.toFloatOrNull()
         if (fromAmount == null) {
             _conversion.value = CurrencyEvent.Failure("0")
             return
@@ -50,12 +47,12 @@ class SharedViewModel @Inject constructor(
         viewModelScope.launch (dispatchers.io){
             _conversion.value = CurrencyEvent.Loading
 
-            when(val ratesResponse = repository.getRates(currencyFrom.value.peekContent().code)) {
+            when(val ratesResponse = repository.getRates(currencyFrom.value.code)) {
                 is Resource.Error -> _conversion.value = CurrencyEvent.Failure(ratesResponse.message!!)
                 is Resource.Success -> {
                     val rates = ratesResponse.data!!.rates
                     val date = ratesResponse.data.date
-                    val rate =  getRateForCurrency(currencyTo.value.peekContent().code, rates)
+                    val rate =  getRateForCurrency(currencyTo.value.code, rates)
                     if(rate == null) {
                         _conversion.value = CurrencyEvent.Failure("Unexpected error")
                     } else {
@@ -63,7 +60,7 @@ class SharedViewModel @Inject constructor(
                         _conversion.value = CurrencyEvent.Success(
                                 "$convertedCurrency",
                                 date = "Exchange rates provided by the European Central Bank on $date",
-                                rate = "1 ${currencyFrom.value.peekContent().code} = $rate ${currencyTo.value.peekContent().code}"
+                                rate = "1 ${currencyFrom.value.code} = $rate ${currencyTo.value.code}"
                         )
                     }
                 }
@@ -72,19 +69,19 @@ class SharedViewModel @Inject constructor(
     }
 
     fun switchCurrencies(){
-        val tempCurrency = currencyFrom.value.peekContent()
-        _currencyFrom.value = Event(currencyTo.value.peekContent())
-        _currencyTo.value = Event(tempCurrency)
+        val tempCurrency = currencyFrom.value
+        _currencyFrom.value = currencyTo.value
+        _currencyTo.value = tempCurrency
 
         convert()
     }
 
     fun setSelectedFromCurrency(currency: Currency){
-        _currencyFrom.value = Event(currency)
+        _currencyFrom.value = currency
     }
 
     fun setSelectedToCurrency(currency: Currency) {
-        _currencyTo.value = Event(currency)
+        _currencyTo.value = currency
     }
 
     fun filter(query : String) : MutableList<Currency>{
@@ -99,7 +96,7 @@ class SharedViewModel @Inject constructor(
     }
 
     fun updateAmount(amount: String) {
-        _amount.value = Event(amount)
+        _amount.value = amount
         convert()
     }
 
